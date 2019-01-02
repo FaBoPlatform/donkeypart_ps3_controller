@@ -8,7 +8,7 @@ The code for this part was copied from [Tawn Kramer's](https://github.com/tawnkr
 
 2. Install the parts python package.
     ```bash
-    pip install git+https://github.com/autorope/donkeypart_ps3_controller.git
+    pip install git+https://github.com/FaBoPlatform/donkeypart_ps3_controller
     ```
 
 3. Import the part at the top of your manage.py script.
