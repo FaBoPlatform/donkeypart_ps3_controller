@@ -1,5 +1,72 @@
 The code for this part was copied from [Tawn Kramer's](https://github.com/tawnkramer/donkey) fork of donkeycar.
 
+# F710/Elecom Joystick Controller
+
+## Install
+
+1. Connect your bluetooth controller to the raspberry pi. See the Bluetooth section below.
+
+2. Install the parts python package.
+    ```bash
+    pip install git+https://github.com/autorope/donkeypart_ps3_controller.git
+    ```
+
+3. Import the part at the top of your manage.py script.
+    
+    Using F710
+
+    ```python
+    from donkeypart_ps3_controller import F710JoystickController
+    ``` 
+
+    Using Elecom
+
+    ```python
+    from donkeypart_ps3_controller import ElecomJoystickController
+    ```   
+
+4. Replace the controller part of your manage.py to use the JoysticController part.
+
+    Using F710
+
+    ```python
+    ctr = F710JoystickController(
+       throttle_scale=cfg.JOYSTICK_MAX_THROTTLE,
+       steering_scale=cfg.JOYSTICK_STEERING_SCALE,
+       auto_record_on_throttle=cfg.AUTO_RECORD_ON_THROTTLE
+    )
+
+     V.add(ctr,
+          inputs=['cam/image_array'],
+          outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
+          threaded=True)
+    ```
+
+    Using Elecom
+
+    ```python
+    ctr = ElecomJoystickController(
+       throttle_scale=cfg.JOYSTICK_MAX_THROTTLE,
+       steering_scale=cfg.JOYSTICK_STEERING_SCALE,
+       auto_record_on_throttle=cfg.AUTO_RECORD_ON_THROTTLE
+    )
+
+     V.add(ctr,
+          inputs=['cam/image_array'],
+          outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
+          threaded=True)
+    ```
+
+5. Add the required config paramters to your config.py file. It should look something like this.
+    ```python
+    #JOYSTICK
+    JOYSTICK_STEERING_SCALE = 1.0
+    AUTO_RECORD_ON_THROTTLE = True
+    ```
+
+6. Now you're ready to run the `python manage.py drive --js` command to start your car.
+
+
 # PS3/PS4 Joystick Controller
 
 The default web controller may be replaced with a one line change to use a physical joystick part for input. This uses

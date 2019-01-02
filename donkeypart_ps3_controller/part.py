@@ -353,6 +353,71 @@ class PS3JoystickPC(Joystick):
             0x223: 'dpad_right',
         }
 
+class F710Joystick(Joystick):
+    '''
+    An interface to a physical PS3 joystick available at /dev/input/js0
+    Contains mapping that work for Raspian Stretch drivers
+    '''
+
+    def __init__(self, *args, **kwargs):
+        super(F710Joystick, self).__init__(*args, **kwargs)
+
+        self.axis_names = {
+            0x00: 'left_stick_horz',
+            0x01: 'left_stick_vert',
+            0x02: 'right_stick_horz',
+            0x05: 'right_stick_vert',
+        }
+
+        self.button_names = {
+            0x138: 'select',  # 8 312
+            0x139: 'start',  # 9 313
+
+            0x134: 'L1',  # 4 308
+            0x135: 'R1',  # 5 309
+            0x136: 'L2',  # 6 310
+            0x137: 'R2',  # 7 311
+            0x13a: 'L3',  # a 314
+            0x13b: 'R3',  # b 315
+
+            0x130: "square",  # 0 304
+            0x131: "cross",  # 1 305
+            0x132: "circle",  # 2 306
+            0x133: 'triangle',  # 3 307
+        }
+
+
+class ElecomJoystick(Joystick):
+    '''
+    An interface to a physical PS3 joystick available at /dev/input/js0
+    Contains mapping that work for Raspian Stretch drivers
+    '''
+
+    def __init__(self, *args, **kwargs):
+        super(ElecomJoystick, self).__init__(*args, **kwargs)
+
+        self.axis_names = {
+            0x00: 'left_stick_horz',
+            0x01: 'left_stick_vert',
+            0x02: 'right_stick_horz',
+            0x05: 'right_stick_vert',
+        }
+
+        self.button_names = {
+            0x13a: 'select',  # a 314
+            0x13b: 'start',  # b 315
+
+            0x134: 'L1',  # 4 310
+            0x135: 'R1',  # 5 311
+            0x136: 'L2',  # 6 312
+            0x137: 'R2',  # 7 313
+
+            0x130: "square",  # 0 307
+            0x132: "cross",  # 2 305
+            0x133: "circle",  # 3 304
+            0x131: 'triangle',  # 1 308
+        }
+
 
 class JoystickController(object):
     '''
@@ -736,6 +801,98 @@ class PS4JoystickController(JoystickController):
             'L1': self.increase_max_throttle,
             'R1': self.decrease_max_throttle,
             'options': self.toggle_constant_throttle,
+        }
+
+        self.axis_trigger_map = {
+            'left_stick_horz': self.set_steering,
+            'right_stick_vert': self.set_throttle,
+        }
+
+
+class F710JoystickController(JoystickController):
+    '''
+    A Controller object that maps inputs to actions
+    '''
+    def __init__(self, *args, **kwargs):
+        super(F710JoystickController, self).__init__(*args, **kwargs)
+
+    def init_js(self):
+        '''
+        attempt to init joystick
+        '''
+        try:
+            self.js = F710Joystick(self.dev_fn)
+            self.js.init()
+        except FileNotFoundError:
+            print(self.dev_fn, "not found.")
+            self.js = None
+        return self.js is not None
+
+    def init_trigger_maps(self):
+        '''
+        init set of mapping from buttons to function calls
+        '''
+        self.button_down_trigger_map = {
+            'select': self.toggle_mode,
+            'circle': self.toggle_manual_recording,
+            'triangle': self.erase_last_N_records,
+            'cross': self.emergency_stop,
+            'R2': self.increase_max_throttle,
+            'L2': self.decrease_max_throttle,
+            'start': self.toggle_constant_throttle,
+            "R1": self.chaos_monkey_on_right,
+            "L1": self.chaos_monkey_on_left,
+        }
+
+        self.button_up_trigger_map = {
+            "R1": self.chaos_monkey_off,
+            "L1": self.chaos_monkey_off,
+        }
+
+        self.axis_trigger_map = {
+            'left_stick_horz': self.set_steering,
+            'right_stick_vert': self.set_throttle,
+        }
+
+
+class ElecomJoystickController(JoystickController):
+    '''
+    A Controller object that maps inputs to actions
+    '''
+    def __init__(self, *args, **kwargs):
+        super(ElecomJoystickController, self).__init__(*args, **kwargs)
+
+    def init_js(self):
+        '''
+        attempt to init joystick
+        '''
+        try:
+            self.js = ElecomJoystick(self.dev_fn)
+            self.js.init()
+        except FileNotFoundError:
+            print(self.dev_fn, "not found.")
+            self.js = None
+        return self.js is not None
+
+    def init_trigger_maps(self):
+        '''
+        init set of mapping from buttons to function calls
+        '''
+        self.button_down_trigger_map = {
+            'select': self.toggle_mode,
+            'circle': self.toggle_manual_recording,
+            'triangle': self.erase_last_N_records,
+            'cross': self.emergency_stop,
+            'R2': self.increase_max_throttle,
+            'L2': self.decrease_max_throttle,
+            'start': self.toggle_constant_throttle,
+            "R1": self.chaos_monkey_on_right,
+            "L1": self.chaos_monkey_on_left,
+        }
+
+        self.button_up_trigger_map = {
+            "R1": self.chaos_monkey_off,
+            "L1": self.chaos_monkey_off,
         }
 
         self.axis_trigger_map = {
