@@ -363,10 +363,10 @@ class F710Joystick(Joystick):
         super(F710Joystick, self).__init__(*args, **kwargs)
 
         self.axis_names = {
-            0x00: 'left_stick_vert',
-            0x01: 'left_stick_horz',
-            0x02: 'right_stick_vert',
-            0x05: 'right_stick_horz',
+            0x00: 'right_stick_horz',
+            0x01: 'right_stick_vert',
+            0x02: 'left_stick_horz',
+            0x05: 'left_stick_vert',
         }
 
         self.button_names = {
@@ -397,10 +397,10 @@ class ElecomJoystick(Joystick):
         super(ElecomJoystick, self).__init__(*args, **kwargs)
 
         self.axis_names = {
-            0x00: 'left_stick_vert',
-            0x01: 'left_stick_horz',
-            0x02: 'right_stick_vert',
-            0x05: 'right_stick_horz',
+            0x00: 'right_stick_horz',
+            0x01: 'right_stick_vert',
+            0x02: 'left_stick_horz',
+            0x05: 'left_stick_vert',
         }
 
         self.button_names = {
